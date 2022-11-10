@@ -1,5 +1,6 @@
 import mysql.connector
 from datetime import datetime
+from tabulate import tabulate
 
 mydb= mysql.connector.connect(host = 'localhost' , user = 'root' , password = '' , database = 'ksebdb')
 mycursor = mydb.cursor()
@@ -99,6 +100,10 @@ while True:
 
     elif(choice==7):
         print("view billselected")
+        sql = "SELECT c.name,c.address, b.`month`, b.`year`, b.`paidstatus`, b.`billdate`, b.`totalunit`, b.`bill` FROM `bills` b JOIN consumer c ON b.consumerid=c.id"
+        mycursor.execute(sql)
+        result = mycursor.fetchall()
+        print(tabulate(result,headers=['name','address','month','year', 'paidstatus','billdate','totalunit','bill'],tablefmt = "psql"))
     
     elif(choice==8):
         break
