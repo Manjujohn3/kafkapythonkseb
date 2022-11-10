@@ -30,7 +30,13 @@ while True:
    
     elif(choice==2):
         print("search consumer selected")
-
+        search = input("enter the consumerid, name ,phone number : ")
+        sql = "SELECT `consumerid`, `name`, `address`, `phone`, `email` FROM `consumer` WHERE `consumerid`= '"+search+"' OR `name`='"+search+"' OR `phone`= '"+search+"'"
+        mycursor.execute(sql)
+        result = mycursor.fetchall()
+        for i in result:
+             print(i) 
+     
     elif(choice==3):
         print("delete consumer selected")
         consumerid = input("enter the id: ")
