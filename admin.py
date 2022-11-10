@@ -1,5 +1,5 @@
 import mysql.connector
-from datetime import datetime
+from datetime import date
 
 mydb= mysql.connector.connect(host = 'localhost' , user = 'root' , password = '' , database = 'ksebdb')
 mycursor = mydb.cursor()
@@ -67,36 +67,36 @@ while True:
             print(i)
 
     elif(choice==6):
-        print("generate bill selected")
-        consumerid= input("enter the consumerid: ")
-        sql = 'SELECT `id` FROM `consumer` WHERE`consumerid` =' +consumerid
+    
+        print('generate bill selected')
+        dates = date.today()
+        year = dates.year
+        month = dates.month
+        sql="DELETE FROM `bills` WHERE `month`='"+str(month)+"' AND `year`= '"+str(year)+"'"
         mycursor.execute(sql)
-        result = mycursor.fetchone()
-        a = result[0]
-        print(a)
-        month = 10
-        currentMonth = datetime.now().month
-        currentYear = datetime.now().year
-        sql = "SELECT SUM(`unit`) FROM `usages` WHERE `consumerid`= '"+str(a)+"' AND MONTH(`date`)="+str(month)
-        mycursor.execute(sql)
-        result = mycursor.fetchall()
-        print(result)
-        for i in result:
-         sum = str(i[0])
-
-        print("Total Unit used : ",sum)
-        totalAmount = int(sum)*5
-        print("Total amount: ",totalAmount)
-
-        currentMonth = datetime.now().month
-        currentYear = datetime.now().year
-
-        sql = "INSERT INTO `bills`(`consumerid`, `month`, `year`, `bill`, `paidstatus`, `billdate`, `totalunit`) VALUES (%s,%s,%s,%s,%s,now(),%s)"
-        data = (consumerid,currentMonth,currentYear,totalAmount,'0',sum)
-        mycursor.execute(sql,data)
         mydb.commit()
-        print("Bill inserted successfully.")
-
+       
+        sql="SELECT `id` FROM `consumer`"
+        mycursor.execute(sql)
+        result=mycursor.fetchall()
+        for i in result:
+            a=i[0]
+            print(a)
+          
+            sql="SELECT SUM(unit) FROM `usages` WHERE `consumerid`='"+str(a)+"' AND MONTH(date)='"+str(month)+"' AND YEAR(date)='"+str(year)+"' "
+            mycursor.execute(sql)
+            result=mycursor.fetchone()
+            unit=(result[0])
+            print(result)
+            #print(i)
+            total_bill=int(str(result[0])) * 5
+            print(total_bill)
+            #date= datetime.today().strftime('%Y-%m-%d')
+            sql="INSERT INTO `bills`(`consumerid`, `month`, `year`, `bill`, `paidstatus`, `billdate`, `totalunit`,`duedate`) VALUES (%s,%s,%s,%s,%s,now(),%s,now()+interval 14 day)"
+            data = (str(a),str(month),str(year),total_bill,'0',unit)
+            mycursor.execute(sql,data)
+            mydb.commit()
+            print("Bill inserted successfully.")
     elif(choice==7):
         print("view billselected")
     
