@@ -14,7 +14,8 @@ while True:
     print("5 view all consumer")
     print("6 Generate bill")
     print("7 view bill")
-    print("8 exit")
+    print("8 Top 2 high bill")
+    print("9 exit")
 
     choice = int(input("Enter an option: "))
     if(choice==1):
@@ -106,6 +107,13 @@ while True:
         print(tabulate(result,headers=['name','address','month','year', 'paidstatus','billdate','totalunit','bill'],tablefmt = "psql"))
     
     elif(choice==8):
+        print('Top 2 high bill')
+        sql = "SELECT * FROM `bills` ORDER BY `bill` DESC LIMIT 2"
+        mycursor.execute(sql)
+        result = mycursor.fetchall()
+        print(tabulate(result,headers=['id', 'consumerid', 'month', 'year', 'bill', 'paidstatus', 'billdate',  'totalunit','duedate']))   
+    
+    elif(choice==9):
         break
 
 
